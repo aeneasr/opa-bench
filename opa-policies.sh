@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ../..
+
 (cd rego/core; curl -X PUT --data-binary @effect.rego localhost:8181/v1/policies/core/effect)
 (cd rego/core; curl -X PUT --data-binary @role.rego localhost:8181/v1/policies/core/role)
 (cd rego/condition; curl -X PUT --data-binary @boolean.rego localhost:8181/v1/policies/condition/boolean)

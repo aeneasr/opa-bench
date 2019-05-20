@@ -18,3 +18,60 @@ performance of each of those flavors with:
 ```
 $ opa-bench opa <flavor> --workers 25 --policies 30000
 ```
+
+For example:
+
+```
+$ opa-bench opa exact --workers 1 --policies 30000
+$ opa-bench opa regex --workers 25 --policies 30000
+$ opa-bench opa glob --workers 25 --policies 30000
+```
+
+### Benchmarking `exact`
+
+```shell
+opa-bench opa exact --workers 1 --policies 10
+opa-bench opa exact --workers 1 --policies 100
+opa-bench opa exact --workers 1 --policies 1000
+opa-bench opa exact --workers 1 --policies 10000
+opa-bench opa exact --workers 1 --policies 20000
+opa-bench opa exact --workers 1 --policies 30000
+opa-bench opa exact --workers 5 --policies 30000
+opa-bench opa exact --workers 10 --policies 30000
+opa-bench opa exact --workers 20 --policies 30000
+opa-bench opa exact --workers 25 --policies 30000
+```
+
+```shell
+opa-bench opa glob --workers 1 --policies 10
+opa-bench opa glob --workers 1 --policies 100
+opa-bench opa glob --workers 1 --policies 1000
+opa-bench opa glob --workers 1 --policies 10000
+opa-bench opa glob --workers 1 --policies 20000
+opa-bench opa glob --workers 1 --policies 30000
+opa-bench opa glob --workers 5 --policies 30000
+opa-bench opa glob --workers 10 --policies 30000
+opa-bench opa glob --workers 20 --policies 30000
+opa-bench opa glob --workers 25 --policies 30000
+```
+
+```shell
+opa-bench opa regex --workers 1 --policies 10
+opa-bench opa regex --workers 1 --policies 100
+opa-bench opa regex --workers 1 --policies 1000
+opa-bench opa regex --workers 1 --policies 10000
+opa-bench opa regex --workers 1 --policies 20000
+opa-bench opa regex --workers 1 --policies 30000
+opa-bench opa regex --workers 5 --policies 30000
+opa-bench opa regex --workers 10 --policies 30000
+opa-bench opa regex --workers 20 --policies 30000
+opa-bench opa regex --workers 25 --policies 30000
+
+```
+
+```shell
+opa-bench opa regex --workers 1 --policies 100
+opa-bench opa regex --workers 10 --policies 100
+opa-bench opa regex --workers 25 --policies 100
+opa-bench opa regex --workers 50 --policies 100
+```

@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/ory/x/cmdx"
@@ -76,13 +77,16 @@ var opaCmd = &cobra.Command{
 		policies := flagx.MustGetInt(cmd, "policies")
 		runFor := flagx.MustGetInt(cmd, "run-for")
 
-		l.Infof("Creating %d policies...", policies)
+		l.Debugf("Creating %d policies...", policies)
 		createOPAPolicies(policies, args[0])
-		l.Infof("Created %d policies", policies)
-
+		l.Debugf("Created %d policies", policies)
 
 		var wg sync.WaitGroup
 		wg.Add(workers)
+
+		var completeTime int64 = 0
+		var completeCount int64 = 0
+
 		start := time.Now()
 		// Create some workers to simulate humans
 		for i := 0; i < workers; i++ {
@@ -93,14 +97,19 @@ var opaCmd = &cobra.Command{
 
 				for time.Now().Sub(start).Seconds() < float64(runFor) {
 					count++
-					total += checkOPA(args[0])
+					took := checkOPA(args[0])
+					total += took
+
+					atomic.AddInt64(&completeTime, int64(took))
+					atomic.AddInt64(&completeCount, 1)
 				}
 
-				l.Infof("Took %.8fs to on average for worker %d", total.Seconds()/float64(count), w)
+				l.Debugf("Took %.8fs to on average for worker %d", total.Seconds()/float64(count), w)
 			}(i)
 		}
+
 		wg.Wait()
-		l.Infof("Done")
+		fmt.Printf("Took %.8fs on average per request to: %s\n", time.Duration(completeTime).Seconds()/float64(completeCount), "http://localhost:8181/v1/data/ory/"+args[0]+"/allow")
 	},
 }
 
@@ -171,6 +180,10 @@ func createOPAPolicies(amount int, flavor string) {
 	res, err := http.DefaultClient.Do(req)
 	cmdx.Must(err, "%v", err)
 	defer res.Body.Close()
+	if res.StatusCode != 404 && res.StatusCode != http.StatusNoContent {
+		err := errors.Errorf("Expected status code 204 or 404 when deleting previous data, got: %d", res.StatusCode)
+		cmdx.Must(err, "%+v", err)
+	}
 
 	policies := make([]*Policy, amount)
 	for i := 0; i < amount; i++ {
@@ -196,7 +209,7 @@ func createOPAPolicies(amount int, flavor string) {
 	var b bytes.Buffer
 	err = json.NewEncoder(&b).Encode(&struct {
 		Policies []*Policy `json:"policies"`
-		Roles    []string        `json:"roles"`
+		Roles    []string  `json:"roles"`
 	}{
 		Policies: policies,
 		Roles:    []string{},
