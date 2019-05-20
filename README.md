@@ -16,5 +16,5 @@ The rego policies support different "flavors" (`exact`, `regex`, `glob`). You ca
 performance of each of those flavors with:
 
 ```
-$ keto-ptt opa <flavor> --workers 25 --policies 30000
+$ opa-bench opa <flavor> --workers 25 --policies 30000
 ```
