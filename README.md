@@ -66,7 +66,6 @@ opa-bench opa regex --workers 5 --policies 30000
 opa-bench opa regex --workers 10 --policies 30000
 opa-bench opa regex --workers 20 --policies 30000
 opa-bench opa regex --workers 25 --policies 30000
-
 ```
 
 ```shell
